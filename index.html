@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dhanvantari Ayurveda</title>
+  <link rel="icon" type="image/png" href="DHANVANTARI_FEVICON.png">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Mukta:wght@400;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --forest: #1c4a36;
+      --forest-dark: #0e2a1f;
+      --forest-light: #2f7d4f;
+      --velvet: #7a0f1f;
+      --velvet-dark: #4a0612;
+      --velvet-light: #a3202f;
+      --turmeric: #e8a914;
+      --turmeric-dark: #a8740a;
+      --saffron: #f29d12;
+      --sandal: #f6ead2;
+      --clay: #3a2616;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--forest-dark);
+      font-family: 'Mukta', sans-serif
+    }
+
+    /* ---------- Stage ---------- */
+    .stage {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--sandal);
+      padding: 24px;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 40%, #2f6b4b 0%, var(--forest-dark) 72%);
+    }
+
+    /* rotating mandala in the background */
+    .mandala {
+      position: absolute;
+      width: min(110vw, 820px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        repeating-conic-gradient(from 0deg, rgba(232, 169, 20, .16) 0 6deg, transparent 6deg 15deg);
+      -webkit-mask: radial-gradient(circle, transparent 28%, #000 29%, #000 62%, transparent 63%);
+      mask: radial-gradient(circle, transparent 28%, #000 29%, #000 62%, transparent 63%);
+      animation: spin 90s linear infinite;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+
+    body.open .mandala {
+      opacity: 1;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .stage>*:not(.mandala) {
+      position: relative
+    }
+
+    /* Subtle fade-in on stage elements right as curtain starts opening */
+    .stage-logo,
+    .stage h1,
+    .stage .sub,
+    .stage .go-btn {
+      opacity: 0;
+      transform: translateY(12px) scale(0.96);
+      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    body.open .stage-logo {
+      opacity: 1;
+      transform: none;
+      transition-delay: 0.1s;
+    }
+
+    body.open .stage h1 {
+      opacity: 1;
+      transform: none;
+      transition-delay: 0.25s;
+    }
+
+    body.open .stage .sub {
+      opacity: .92;
+      transform: none;
+      transition-delay: 0.4s;
+    }
+
+    body.open .stage .go-btn {
+      opacity: 1;
+      transform: none;
+      transition-delay: 0.55s;
+      pointer-events: auto;
+    }
+
+    .stage-logo {
+      width: min(180px, 38vw);
+      aspect-ratio: 1;
+      object-fit: contain;
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 40px rgba(232, 169, 20, .35);
+      margin-bottom: 14px;
+    }
+
+    .stage h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: clamp(2.8rem, 10vw, 6rem);
+      line-height: 1.1;
+      color: var(--turmeric);
+      text-shadow: 0 4px 30px rgba(232, 169, 20, .35);
+    }
+
+    .stage .sub {
+      margin-top: 10px;
+      font-size: clamp(1rem, 2.4vw, 1.3rem);
+    }
+
+    .go-btn {
+      margin-top: 30px;
+      padding: 14px 40px;
+      border: 2px solid var(--turmeric);
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--turmeric), var(--turmeric-dark));
+      color: #2a1a04;
+      font: 600 1.1rem 'Mukta', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .3);
+      pointer-events: none;
+    }
+
+    .go-btn:hover {
+      box-shadow: 0 0 0 6px rgba(232, 169, 20, .28);
+      transform: translateY(-2px);
+    }
+
+    .go-btn:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 4px
+    }
+
+    /* ---------- Curtain ---------- */
+    .curtain {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      cursor: pointer;
+      display: flex;
+      overflow: hidden;
+      transition: visibility 0s linear 3.2s
+    }
+
+    body.open .curtain {
+      pointer-events: none;
+      visibility: hidden
+    }
+
+    .panel {
+      position: relative;
+      width: 50%;
+      height: 100%;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M32 8C42 20 42 36 32 50C22 36 22 20 32 8Z' fill='%23e8a914' fill-opacity='.13'/%3E%3Ccircle cx='32' cy='56' r='2.5' fill='%23e8a914' fill-opacity='.2'/%3E%3C/svg%3E"),
+        repeating-linear-gradient(90deg,
+          var(--velvet-dark) 0, var(--velvet) 5%, var(--velvet-light) 8%, var(--velvet) 11%, var(--velvet-dark) 15%);
+      box-shadow: inset 0 -80px 120px rgba(0, 0, 0, .45);
+      transition: transform 3s cubic-bezier(.65, .02, .25, 1);
+    }
+
+    .panel.left {
+      transform-origin: left center;
+      border-right: 3px solid var(--turmeric-dark)
+    }
+
+    .panel.right {
+      transform-origin: right center;
+      border-left: 3px solid var(--turmeric-dark)
+    }
+
+    body.open .panel.left {
+      transform: translateX(-100%) scaleX(.35)
+    }
+
+    body.open .panel.right {
+      transform: translateX(100%) scaleX(.35)
+    }
+
+    /* marigold garland tie-back */
+    .panel::after {
+      content: "";
+      position: absolute;
+      bottom: 20%;
+      width: 18px;
+      height: 110px;
+      border-radius: 9px;
+      background: repeating-linear-gradient(var(--saffron) 0 14px, var(--turmeric) 14px 28px);
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, .15);
+    }
+
+    .panel.left::after {
+      right: 12px
+    }
+
+    .panel.right::after {
+      left: 12px
+    }
+
+    /* valance + toran (mango leaf and marigold flower decorative garland) */
+    .valance {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 9vh;
+      min-height: 56px;
+      z-index: 11;
+      pointer-events: none;
+      background: repeating-linear-gradient(90deg, var(--saffron) 0 36px, var(--turmeric) 36px 72px);
+      border-bottom: 5px solid var(--velvet-dark);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .45);
+    }
+
+    .valance::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      height: 54px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='54'%3E%3Cpath d='M15 2C25 14 25 30 15 44C5 30 5 14 15 2Z' fill='%232f7d4f'/%3E%3Cpath d='M15 6V40' stroke='%23a8d5a0' stroke-width='1.5'/%3E%3Ccircle cx='15' cy='48' r='5' fill='%23f29d12'/%3E%3Ccircle cx='15' cy='48' r='2' fill='%23a8740a'/%3E%3C/svg%3E") repeat-x;
+    }
+
+    /* hint */
+    .hint {
+      position: fixed;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%);
+      z-index: 12;
+      text-align: center;
+      color: var(--sandal);
+      pointer-events: none;
+      padding: 22px 34px;
+      border: 2px solid var(--turmeric);
+      border-radius: 50% / 40%;
+      background: rgba(50, 4, 12, .6);
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+      animation: pulse 2.4s ease-in-out infinite;
+      transition: opacity .4s;
+    }
+
+    .hint .t {
+      display: block;
+      margin-top: 6px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 3.4vw, 1.6rem)
+    }
+
+    .hint small {
+      display: block;
+      margin-top: 2px;
+      font-size: .9rem;
+      opacity: .85
+    }
+
+    body.open .hint {
+      opacity: 0;
+      animation: none
+    }
+
+    @keyframes pulse {
+      50% {
+        transform: translate(-50%, -50%) scale(1.05)
+      }
+    }
+
+    /* ---------- Flowers and herbs ---------- */
+    .flower {
+      position: fixed;
+      top: -60px;
+      z-index: 20;
+      pointer-events: none;
+      -webkit-user-select: none;
+      user-select: none;
+      will-change: transform;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+        opacity: 1
+      }
+
+      100% {
+        transform: translate3d(var(--dx), 110vh, 0) rotate(var(--rot));
+        opacity: .95
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      .panel {
+        transition-duration: .8s
+      }
+
+      .hint {
+        animation: none
+      }
+
+      .mandala {
+        animation: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="curtain" id="curtain" role="button" tabindex="0" aria-label="Click to open the curtain">
+    <div class="panel left"></div>
+    <div class="panel right"></div>
+  </div>
+  <div class="valance"></div>
+  <div class="hint">
+    <span class="t">Click to Inaugurate</span>
+    <small>Dhanvantari Ayurveda</small>
+  </div>
+
+  <main class="stage">
+    <div class="mandala"></div>
+    <img src="DHANVANTARI_FEVICON.png" alt="Dhanvantari Ayurveda Logo" class="stage-logo">
+    <h1>Dhanvantari Ayurveda</h1>
+    <p class="sub">Rooted in nature. Our new website is now live.</p>
+    <a class="go-btn" id="goBtn" href="#">Visit our website</a>
+  </main>
+
+  <script>
+    /* ====== ADD YOUR WEBSITE LINK HERE ====== */
+    const WEBSITE_URL = "https://dhanvantariayurveda.org/";
+    /* ========================================= */
+
+    const curtain = document.getElementById('curtain');
+    const goBtn = document.getElementById('goBtn');
+    goBtn.href = WEBSITE_URL;
+
+    /* ---------- Sound: clapping + singing bowl / bell ---------- */
+    let ctx;
+    function clap(when, volume) {
+      const dur = 0.12;
+      const buf = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const f = ctx.createBiquadFilter(); f.type = 'bandpass';
+      f.frequency.value = 1200 + Math.random() * 1800; f.Q.value = 0.8;
+      const g = ctx.createGain(); g.gain.value = volume;
+      src.connect(f).connect(g).connect(ctx.destination);
+      src.start(when);
+    }
+    function bowl(when) {                       // auspicious sound (singing bowl)
+      [[432, .28], [864, .14], [1296, .07]].forEach(([hz, vol]) => {
+        const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = hz;
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0.0001, when);
+        g.gain.exponentialRampToValueAtTime(vol, when + 0.03);
+        g.gain.exponentialRampToValueAtTime(0.0001, when + 5);
+        o.connect(g).connect(ctx.destination); o.start(when); o.stop(when + 5.1);
+      });
+    }
+    function celebrate(seconds = 5) {
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') ctx.resume();
+      const t0 = ctx.currentTime + 0.05;
+      bowl(t0);
+      const total = seconds * 22;
+      for (let i = 0; i < total; i++) {
+        const t = i / total;
+        const env = Math.sin(Math.PI * Math.min(1, t * 1.15));
+        clap(t0 + t * seconds + Math.random() * 0.03, 0.12 + 0.55 * env * Math.random());
+      }
+    }
+
+    /* ---------- Flower and herb shower ---------- */
+    // 🪷 lotus, 🌼 marigold/jasmine, 🌿 tulsi-neem, 🍃 leaves, 🏵️ marigold, 🌸 rose
+    const ITEMS = ['🪷', '🌼', '🌿', '🍃', '🏵️', '🌸', '🌿', '🪷', '🌼'];
+    function spawnFlower() {
+      const f = document.createElement('span');
+      f.className = 'flower';
+      f.textContent = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+      f.style.left = Math.random() * 100 + 'vw';
+      f.style.fontSize = (18 + Math.random() * 26) + 'px';
+      f.style.setProperty('--dx', (Math.random() * 160 - 80) + 'px');
+      f.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+      f.style.animationDuration = (3.5 + Math.random() * 3.5) + 's';
+      document.body.appendChild(f);
+      f.addEventListener('animationend', () => f.remove());
+    }
+    // Flowers keep falling until the website button is clicked
+    let flowerTimer = null;
+    function startFlowers() {
+      for (let i = 0; i < 50; i++) setTimeout(spawnFlower, i * 40);   // initial burst
+      flowerTimer = setInterval(spawnFlower, 160);                    // continuous shower
+    }
+    function stopFlowers() { clearInterval(flowerTimer); flowerTimer = null; }
+    goBtn.addEventListener('click', stopFlowers);
+    document.addEventListener('visibilitychange', () => {             // pause when tab is hidden
+      if (!opened) return;
+      if (document.hidden) stopFlowers();
+      else if (!flowerTimer) flowerTimer = setInterval(spawnFlower, 160);
+    });
+
+    let opened = false;
+    function openCurtain() {
+      if (opened) return;
+      opened = true;
+      document.body.classList.add('open');
+      celebrate(5);
+      startFlowers();
+      setTimeout(() => goBtn.focus({ preventScroll: true }), 3700);
+    }
+    curtain.addEventListener('click', openCurtain);
+    curtain.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCurtain(); }
+    });
+  </script>
+</body>
+
+</html>
