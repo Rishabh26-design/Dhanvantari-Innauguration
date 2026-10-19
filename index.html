@@ -50,7 +50,7 @@
       color: var(--sandal);
       padding: 24px;
       overflow: hidden;
-      background: radial-gradient(ellipse at 50% 40%, #2f6b4b 0%, var(--forest-dark) 72%);
+      background: #0e2a1f url("Background.jpg") center center / cover no-repeat;
     }
 
     /* rotating mandala in the background */
@@ -266,13 +266,13 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 9vh;
-      min-height: 56px;
+      height: 5vh;
+      min-height: 30px;
       z-index: 11;
       pointer-events: none;
-      background: repeating-linear-gradient(90deg, var(--saffron) 0 36px, var(--turmeric) 36px 72px);
-      border-bottom: 5px solid var(--velvet-dark);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, .45);
+      background: repeating-linear-gradient(90deg, var(--saffron) 0 24px, var(--turmeric) 24px 48px);
+      border-bottom: 3px solid var(--velvet-dark);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .4);
     }
 
     .valance::after {
@@ -386,7 +386,7 @@
     <div class="mandala"></div>
     <img src="DHANVANTARI_FEVICON.png" alt="Dhanvantari Ayurveda Logo" class="stage-logo">
     <h1>Dhanvantari Ayurveda</h1>
-    <p class="sub">Rooted in nature. Our new website is now live.</p>
+    <p class="sub">From Nature's Goodness to Better Wellness</p>
     <a class="go-btn" id="goBtn" href="#">Visit our website</a>
     <div class="credits">
       <div class="credit-name">Himanshu Trivedi</div>
@@ -465,10 +465,10 @@
       for (let i = 0; i < 50; i++) setTimeout(spawnFlower, i * 40);   // initial burst
       flowerTimer = setInterval(spawnFlower, 160);                    // continuous shower
     }
-    function stopFlowers() { 
-      clearInterval(flowerTimer); 
-      flowerTimer = null; 
-      try { clapAudio.pause(); } catch (e) {}
+    function stopFlowers() {
+      clearInterval(flowerTimer);
+      flowerTimer = null;
+      try { clapAudio.pause(); } catch (e) { }
     }
     goBtn.addEventListener('click', stopFlowers);
     document.addEventListener('visibilitychange', () => {             // pause when tab is hidden
